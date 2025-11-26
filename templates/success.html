@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+
+{% block extra_head %}
+    <style>
+        /* Special celebratory animations for success page */
+        .success-icon {
+            font-size: 72px;
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes successPop {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--mustard-yellow);
+            position: absolute;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Flying Jack animation */
+        .flying-jack {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes jackAnimation {
+            0% {
+                left: -100px;
+                top: 40%;
+                transform: translateY(-50%) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                left: 50%;
+                top: 40%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                left: 50%;
+                top: 40%;
+                transform: translate(-50%, -50%) scale(8);
+            }
+            75% {
+                left: 50%;
+                top: 40%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                left: calc(100vw + 100px);
+                top: 40%;
+                transform: translateY(-50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .flying-jack.active {
+            animation: jackAnimation 6s ease-in-out;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+        <!-- Flying Jack -->
+        <img src="{{ url_for('static', filename='images/Jack.png') }}"
+             class="flying-jack"
+             id="flyingJack"
+             alt="Jack flying across">
+
+        <div class="alert alert-success">
+            <h2 style="margin-bottom: 15px; text-align: center;">Vote Submitted!</h2>
+            <p style="text-align: center; font-size: 17px;">
+                Thank you, <strong>{{ voter_name }}</strong>!<br>
+                Your vote has been counted.
+            </p>
+            <p style="text-align: center; font-size: 16px; margin-top: 20px; color: var(--terracotta); font-weight: 600;">
+                We've had {{ total_votes }} vote{{ 's' if total_votes != 1 else '' }} so far!
+            </p>
+            <p style="text-align: center; font-size: 14px;">
+                Results will be shown when all votes are in.
+            </p>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Flying Jack animation with 4 second delays
+        const flyingJack = document.getElementById('flyingJack');
+
+        function makeJackFly() {
+            // Trigger the animation
+            flyingJack.classList.add('active');
+
+            // Remove the class after animation completes (6 seconds)
+            setTimeout(() => {
+                flyingJack.classList.remove('active');
+
+                // Wait 4 seconds before next appearance
+                setTimeout(makeJackFly, 4000);
+            }, 6000);
+        }
+
+        // Wait 4 seconds before first appearance
+        setTimeout(makeJackFly, 4000);
+    </script>
+{% endblock %}

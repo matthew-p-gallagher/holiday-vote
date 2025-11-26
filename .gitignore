@@ -1,0 +1,15 @@
+*.db
+__pycache__/
+*.pyc
+venv/
+.env
+instance/
+
+# Some static images
+
+static/images/
+
+# Claude
+
+.claude/
+CLAUDE.md

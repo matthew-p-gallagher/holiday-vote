@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+{% endblock %}
+
+{% block content %}
+        <h1>Big 30th Holiday Bash 2026</h1>
+        <p class="subtitle">
+            ✈ Where shall we go? ✈
+        </p>
+
+        {% if error %}
+        <div class="alert alert-error">
+            <strong>⚠ Something went wrong!</strong> {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('vote') }}" id="voteForm">
+            <div class="form-group wizard-step wizard-step-visible" id="nameStep">
+                <label class="form-label">Who's Voting?</br><span class="label-note">Names are not linked to votes</span></label>
+                <div class="radio-grid">
+                    {% for traveler in travelers %}
+                    <label class="radio-button">
+                        <input type="radio" name="voter_name" value="{{ traveler.name }}" required>
+                        <span class="radio-button-content">{{ traveler.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group wizard-step wizard-step-hidden" id="mapStep">
+                <label class="form-label">Select Your Destinations from the Map</label>
+
+                <!-- Map container -->
+                <div id="map"></div>
+
+                <!-- Selection status display -->
+                <div class="selection-status">
+                    <div class="selection-item" id="firstChoiceDisplay">
+                        <span class="selection-label">1st Choice (2 pts):</span>
+                        <span class="selection-value" id="firstChoiceText">Not selected</span>
+                    </div>
+                    <div class="selection-item" id="secondChoiceDisplay">
+                        <span class="selection-label">2nd Choice (1 pt):</span>
+                        <span class="selection-value" id="secondChoiceText">Not selected</span>
+                    </div>
+                </div>
+
+                <!-- Hidden form fields -->
+                <input type="hidden" id="first_choice" name="first_choice" required>
+                <input type="hidden" id="second_choice" name="second_choice" required>
+            </div>
+
+            <div class="wizard-step wizard-step-hidden" id="submitStep">
+                <button type="submit" id="submitButton">Cast Your Vote</button>
+            </div>
+        </form>
+{% endblock %}
+
+{% block scripts %}
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        // Wizard-style progressive form disclosure
+        const firstChoiceInput = document.getElementById('first_choice');
+        const secondChoiceInput = document.getElementById('second_choice');
+
+        const nameStep = document.getElementById('nameStep');
+        const mapStep = document.getElementById('mapStep');
+        const submitStep = document.getElementById('submitStep');
+
+        const firstChoiceText = document.getElementById('firstChoiceText');
+        const secondChoiceText = document.getElementById('secondChoiceText');
+
+        // Track current selections
+        let firstChoiceValue = null;
+        let secondChoiceValue = null;
+
+        // Store marker references and destination info for updates
+        const markers = {};
+        const destinationInfo = {}; // Maps destination to proposer name
+        let map = null;
+        let initialBounds = null; // Store initial map bounds for reset
+
+        // Helper function to show a wizard step
+        function showStep(step) {
+            step.classList.remove('wizard-step-hidden');
+            step.classList.add('wizard-step-visible');
+        }
+
+        // Helper function to hide a wizard step
+        function hideStep(step) {
+            step.classList.remove('wizard-step-visible');
+            step.classList.add('wizard-step-hidden');
+        }
+
+        // When traveler name is selected, pause, fade out name, then fade in map
+        const voterRadios = document.querySelectorAll('input[name="voter_name"]');
+        voterRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    // Pause for 400ms to let user see their selection
+                    setTimeout(() => {
+                        // Fade out name step
+                        hideStep(nameStep);
+
+                        // Wait for fade-out animation (500ms) then show map
+                        setTimeout(() => {
+                            showStep(mapStep);
+                            // Initialize map after it's visible
+                            setTimeout(() => initializeMap(), 300);
+                        }, 500);
+                    }, 400);
+                }
+            });
+        });
+
+        // Initialize the map
+        function initializeMap() {
+            if (map) return; // Already initialized
+
+            // Create map centered on Europe
+            // Overridden by fitbounds
+            map = L.map('map').setView([43.0, -3.0], 4);
+
+            // Add Stamen Watercolor tiles (artistic watercolor style)
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg', {
+                maxZoom: 16,
+            }).addTo(map);
+
+            // Fetch holiday locations and create markers
+            fetch('{{ url_for("api_holidays") }}')
+                .then(response => response.json())
+                .then(holidays => {
+                    holidays.forEach(holiday => {
+                        if (holiday.latitude && holiday.longitude) {
+                            createMarker(holiday);
+                        }
+                    });
+
+                    // Adjust map to show all markers
+                    if (holidays.length > 0) {
+                        const validHolidays = holidays.filter(h => h.latitude && h.longitude);
+                        if (validHolidays.length > 0) {
+                            const bounds = L.latLngBounds(
+                                validHolidays.map(h => [h.latitude, h.longitude])
+                            );
+                            map.fitBounds(bounds, { padding: [40, 40] });
+                            // Store initial bounds for reset after selection
+                            initialBounds = bounds;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error loading map data:', error));
+        }
+
+        // Create marker with custom icon and popup
+        function createMarker(holiday) {
+            const icon = createMarkerIcon('blue', holiday.by); // Default blue color with profile image
+
+            const marker = L.marker([holiday.latitude, holiday.longitude], {
+                icon: icon
+            }).addTo(map);
+
+            // Store marker reference and destination info
+            markers[holiday.destination] = marker;
+            destinationInfo[holiday.destination] = holiday.by;
+
+            // Create popup with selection buttons
+            const imageUrl = `/static/images/${holiday.by}.jpeg`;
+            const popupContent = `
+                <div style="text-align: center; padding: 8px; min-width: 160px;">
+                    <div style="width: 110px; height: auto; margin: 0 auto 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
+                        <img src="${imageUrl}" style="width: 100%; height: auto; display: block;" alt="${holiday.by}">
+                    </div>
+                    <strong style="font-size: 16px; color: var(--terracotta, #D4846A); display: block; margin-bottom: 3px;">
+                        ${holiday.destination}
+                    </strong>
+                    <small style="color: #666; display: block; margin-bottom: 10px; font-size: 12px;">
+                        Suggested by ${holiday.by}
+                    </small>
+                    <button type="button" onclick="selectDestination('${holiday.destination}', '${holiday.by}', 'first')"
+                            class="map-select-btn map-select-first"
+                            style="display: block; width: 100%; margin-bottom: 5px; padding: 4px 6px; background: linear-gradient(135deg, #D4A24C 0%, #E6C068 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Lora', serif;">
+                        Select as 1st Choice
+                    </button>
+                    <button type="button" onclick="selectDestination('${holiday.destination}', '${holiday.by}', 'second')"
+                            class="map-select-btn map-select-second"
+                            style="display: block; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #999 0%, #BBB 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Lora', serif;">
+                        Select as 2nd Choice
+                    </button>
+                </div>
+            `;
+
+            marker.bindPopup(popupContent);
+
+            // Add permanent label showing destination name above marker
+            marker.bindTooltip(holiday.destination, {
+                permanent: true,
+                direction: 'top',
+                offset: [0, -48],  // Position above the marker
+                className: 'marker-label'
+            });
+        }
+
+        // Create marker icon with profile image (unselected) or colored circle (selected)
+        function createMarkerIcon(color, by) {
+            // If selected (gold or silver), show just colored circle with pin point
+            if (color === 'gold' || color === 'silver') {
+                let bgColor = color === 'gold' ? '#D4A24C' : '#999';
+                return L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="position: relative; width: 44px; height: 52px;">
+                        <div style="background-color: ${bgColor}; width: 44px; height: 44px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>
+                        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid ${bgColor}; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));"></div>
+                    </div>`,
+                    iconSize: [44, 52],
+                    iconAnchor: [22, 52]
+                });
+            }
+
+            // If unselected, show profile image with white border and pin point
+            const imageUrl = `/static/images/${by}.jpeg`;
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="position: relative; width: 44px; height: 52px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); overflow: hidden; background: white;">
+                        <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="${by}">
+                    </div>
+                    <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid white; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));"></div>
+                </div>`,
+                iconSize: [44, 52],
+                iconAnchor: [22, 52]
+            });
+        }
+
+        // Handle destination selection
+        window.selectDestination = function(destination, by, choice) {
+            if (choice === 'first') {
+                // If this destination was previously second choice, clear it
+                if (secondChoiceValue === destination) {
+                    secondChoiceValue = null;
+                    secondChoiceInput.value = '';
+                    secondChoiceText.textContent = 'Not selected';
+                    updateMarkerColor(destination, 'gold');
+                } else {
+                    // Clear previous first choice if exists
+                    if (firstChoiceValue && firstChoiceValue !== destination) {
+                        updateMarkerColor(firstChoiceValue, 'blue');
+                    }
+                    firstChoiceValue = destination;
+                    firstChoiceInput.value = destination;
+                    firstChoiceText.textContent = `${destination} - ${by}`;
+                    updateMarkerColor(destination, 'gold');
+                }
+            } else if (choice === 'second') {
+                // If this destination was previously first choice, move it to second
+                if (firstChoiceValue === destination) {
+                    // Clear previous second choice if exists
+                    if (secondChoiceValue && secondChoiceValue !== destination) {
+                        updateMarkerColor(secondChoiceValue, 'blue');
+                    }
+                    // Clear first choice
+                    firstChoiceValue = null;
+                    firstChoiceInput.value = '';
+                    firstChoiceText.textContent = 'Not selected';
+                    // Set as second choice
+                    secondChoiceValue = destination;
+                    secondChoiceInput.value = destination;
+                    secondChoiceText.textContent = `${destination} - ${by}`;
+                    updateMarkerColor(destination, 'silver');
+                } else {
+                    // Clear previous second choice if exists
+                    if (secondChoiceValue && secondChoiceValue !== destination) {
+                        updateMarkerColor(secondChoiceValue, 'blue');
+                    }
+                    secondChoiceValue = destination;
+                    secondChoiceInput.value = destination;
+                    secondChoiceText.textContent = `${destination} - ${by}`;
+                    updateMarkerColor(destination, 'silver');
+                }
+            }
+
+            // Close popup after selection
+            map.closePopup();
+
+            // Reset map to show all destinations after a short delay
+            if (initialBounds) {
+                setTimeout(() => {
+                    map.fitBounds(initialBounds, {
+                        padding: [40, 40],
+                        duration: 0.8  // Smooth animation back to overview
+                    });
+                }, 300);
+            }
+
+            // Show submit button if both choices are made
+            if (firstChoiceValue && secondChoiceValue) {
+                showStep(submitStep);
+            } else {
+                hideStep(submitStep);
+            }
+        };
+
+        // Update marker color
+        function updateMarkerColor(destination, color) {
+            const marker = markers[destination];
+            const by = destinationInfo[destination];
+            if (marker && by) {
+                marker.setIcon(createMarkerIcon(color, by));
+            }
+        }
+
+        // Form validation
+        document.getElementById('voteForm').addEventListener('submit', function(e) {
+            if (!firstChoiceInput.value || !secondChoiceInput.value) {
+                e.preventDefault();
+                alert('Please select both your first and second choices on the map.');
+                return false;
+            }
+            if (firstChoiceInput.value === secondChoiceInput.value) {
+                e.preventDefault();
+                alert('Your first and second choices must be different destinations.');
+                return false;
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,1239 @@
+/* Import elegant fonts for sophisticated travel aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:wght@400;500;600;700&display=swap');
+
+/* CSS Variables - Golden Hour Theme */
+:root {
+    --mustard-yellow: #f4a900;
+    --terracotta: #c1666b;
+    --warm-beige: #d4b896;
+    --chocolate-brown: #4a403a;
+    --deep-terracotta: #a04b4f;
+    --light-cream: #faf6f1;
+    --soft-gold: #e8c891;
+    --shadow-warm: rgba(193, 102, 107, 0.3);
+    --pattern-overlay: rgba(244, 169, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lora', serif;
+    background: linear-gradient(135deg, var(--terracotta) 0%, var(--mustard-yellow) 50%, var(--warm-beige) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Vintage texture overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 10px, var(--pattern-overlay) 10px, var(--pattern-overlay) 20px),
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, var(--pattern-overlay) 10px, var(--pattern-overlay) 20px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+/* Animated sunburst background element */
+body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    right: -20%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--mustard-yellow) 0%, transparent 70%);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+    animation: sunPulse 8s ease-in-out infinite;
+}
+
+@keyframes sunPulse {
+    0%, 100% { transform: scale(1); opacity: 0.15; }
+    50% { transform: scale(1.1); opacity: 0.25; }
+}
+
+.container {
+    max-width: 700px;
+    margin: 50px auto;
+    background: var(--light-cream);
+    padding: 50px 45px;
+    border-radius: 2px;
+    box-shadow:
+        0 20px 60px var(--shadow-warm),
+        inset 0 0 0 1px rgba(244, 169, 0, 0.2),
+        inset 0 0 0 8px var(--light-cream),
+        inset 0 0 0 9px var(--mustard-yellow);
+    position: relative;
+    z-index: 1;
+    animation: containerFadeIn 0.8s ease-out;
+}
+
+@keyframes containerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Decorative corner elements */
+.container::before,
+.container::after {
+    content: '✦';
+    position: absolute;
+    font-size: 24px;
+    color: var(--mustard-yellow);
+    opacity: 0.6;
+}
+
+.container::before {
+    top: 20px;
+    left: 20px;
+}
+
+.container::after {
+    bottom: 20px;
+    right: 20px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--chocolate-brown);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 48px;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    text-shadow: 2px 2px 0 rgba(244, 169, 0, 0.1);
+    animation: titleSlideIn 0.6s ease-out 0.2s both;
+}
+
+@keyframes titleSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--chocolate-brown);
+}
+
+p {
+    color: var(--chocolate-brown);
+    line-height: 1.6;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--terracotta);
+    margin-bottom: 35px;
+    font-size: 18px;
+    font-style: italic;
+    animation: subtitleFadeIn 0.6s ease-out 0.4s both;
+}
+
+@keyframes subtitleFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.form-group {
+    margin-bottom: 30px;
+    animation: formGroupSlideIn 0.5s ease-out both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.5s; }
+.form-group:nth-child(2) { animation-delay: 0.6s; }
+.form-group:nth-child(3) { animation-delay: 0.7s; }
+
+@keyframes formGroupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--chocolate-brown);
+    font-weight: 600;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Lora', serif;
+}
+
+.label-note {
+    color: rgba(74, 64, 58, 0.5);
+    font-weight: 400;
+    font-size: 13px;
+}
+
+/* Radio button grid styling */
+.radio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.radio-button {
+    position: relative;
+    margin-bottom: 0;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+}
+
+.radio-button input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-button-content {
+    display: block;
+    padding: 16px 20px;
+    background: white;
+    border: 2px solid var(--warm-beige);
+    color: var(--chocolate-brown);
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Lora', serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(74, 64, 58, 0.05);
+}
+
+.radio-button:hover .radio-button-content {
+    border-color: var(--mustard-yellow);
+    background: var(--light-cream);
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 2px 4px rgba(74, 64, 58, 0.05),
+        0 4px 12px rgba(244, 169, 0, 0.2);
+}
+
+.radio-button input[type="radio"]:checked + .radio-button-content {
+    background: linear-gradient(135deg, var(--mustard-yellow) 0%, var(--soft-gold) 100%);
+    border-color: var(--terracotta);
+    color: var(--chocolate-brown);
+    font-weight: 600;
+    transform: scale(1.02);
+    box-shadow:
+        inset 0 2px 8px rgba(193, 102, 107, 0.2),
+        0 6px 20px rgba(244, 169, 0, 0.4);
+}
+
+.radio-button input[type="radio"]:focus + .radio-button-content {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow:
+        inset 0 2px 4px rgba(74, 64, 58, 0.05),
+        0 0 0 3px rgba(244, 169, 0, 0.3);
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid var(--warm-beige);
+    border-radius: 0;
+    font-size: 16px;
+    font-family: 'Lora', serif;
+    background: white;
+    color: var(--chocolate-brown);
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(74, 64, 58, 0.05);
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--mustard-yellow);
+    background: var(--light-cream);
+    box-shadow:
+        inset 0 2px 4px rgba(74, 64, 58, 0.05),
+        0 0 0 3px rgba(244, 169, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+button {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--terracotta) 0%, var(--deep-terracotta) 100%);
+    color: var(--light-cream);
+    border: none;
+    border-radius: 0;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(193, 102, 107, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#submitStep {
+    margin-top: 20px;
+}
+
+@keyframes buttonFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(193, 102, 107, 0.4);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 30px;
+    overflow: hidden;
+    border-radius: 0;
+    box-shadow: 0 4px 20px rgba(74, 64, 58, 0.1);
+}
+
+.results-table th,
+.results-table td {
+    padding: 18px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--warm-beige);
+}
+
+.results-table th {
+    background: linear-gradient(135deg, var(--chocolate-brown) 0%, #3a322e 100%);
+    color: var(--light-cream);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.results-table tbody tr {
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.results-table tbody tr:hover {
+    background: var(--light-cream);
+    transform: scale(1.01);
+    box-shadow: 0 2px 10px rgba(193, 102, 107, 0.1);
+}
+
+.results-table tbody tr:first-child {
+    background: linear-gradient(135deg, var(--mustard-yellow) 0%, var(--soft-gold) 100%);
+    position: relative;
+}
+
+.results-table tbody tr:first-child td {
+    font-weight: 600;
+    color: var(--chocolate-brown);
+}
+
+.results-table tbody tr:first-child::before {
+    content: '★';
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 32px;
+    color: var(--terracotta);
+}
+
+.alert {
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    border-radius: 0;
+    border-left: 5px solid;
+    font-family: 'Lora', serif;
+    animation: alertSlideIn 0.5s ease-out;
+}
+
+@keyframes alertSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    color: #2e7d32;
+    border-left-color: #4caf50;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.alert-error {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    color: #c62828;
+    border-left-color: var(--terracotta);
+    box-shadow: 0 4px 15px rgba(193, 102, 107, 0.2);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 24px;
+    color: var(--chocolate-brown);
+    background: var(--warm-beige);
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Lora', serif;
+    letter-spacing: 0.5px;
+    border: 2px solid var(--mustard-yellow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.back-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--mustard-yellow);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.back-link:hover::before {
+    left: 0;
+}
+
+.back-link:hover {
+    color: var(--chocolate-brown);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 169, 0, 0.3);
+}
+
+/* Info box styling */
+.info-box {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-gold) 100%);
+    border-radius: 0;
+    border: 2px dashed var(--mustard-yellow);
+}
+
+.info-box p {
+    margin: 0;
+    color: var(--chocolate-brown);
+    font-size: 14px;
+}
+
+/* Navigation container */
+.nav-container {
+    text-align: center;
+    margin-top: 35px;
+    animation: navFadeIn 0.5s ease-out 0.9s both;
+}
+
+@keyframes navFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive design - Mobile First Approach */
+
+/* Tablets and smaller desktops (768px - 1024px) */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 600px;
+        padding: 40px 35px;
+        margin: 30px auto;
+    }
+
+    h1 {
+        font-size: 42px;
+    }
+
+    .subtitle {
+        font-size: 17px;
+    }
+}
+
+/* Mobile devices (481px - 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    /* Reduce background animation complexity for performance */
+    body::after {
+        animation: none;
+        opacity: 0.1;
+    }
+
+    /* Radio button grid tablet optimization */
+    .radio-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .radio-button-content {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .container {
+        padding: 30px 25px;
+        margin: 15px auto;
+        box-shadow:
+            0 15px 40px var(--shadow-warm),
+            inset 0 0 0 1px rgba(244, 169, 0, 0.2),
+            inset 0 0 0 6px var(--light-cream),
+            inset 0 0 0 7px var(--mustard-yellow);
+    }
+
+    /* Reduce decorative corner size */
+    .container::before,
+    .container::after {
+        font-size: 18px;
+    }
+
+    .container::before {
+        top: 15px;
+        left: 15px;
+    }
+
+    .container::after {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    h1 {
+        font-size: 34px;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        margin-bottom: 28px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    label {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    /* Improve touch targets for mobile */
+    input[type="text"],
+    select {
+        padding: 16px 18px;
+        font-size: 16px; /* Prevent iOS zoom on focus */
+        min-height: 50px;
+    }
+
+    button {
+        padding: 18px;
+        font-size: 17px;
+        letter-spacing: 1.5px;
+        min-height: 56px; /* Better touch target */
+    }
+
+    .back-link {
+        padding: 14px 22px;
+        font-size: 15px;
+        display: block;
+        text-align: center;
+        min-height: 50px;
+        line-height: 22px;
+    }
+
+    /* Optimize table for tablet view */
+    .results-table th,
+    .results-table td {
+        padding: 14px 10px;
+        font-size: 14px;
+    }
+
+    .results-table th {
+        font-size: 12px;
+    }
+
+    .results-table tbody tr:first-child::before {
+        font-size: 24px;
+        left: -3px;
+    }
+
+    .alert {
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        font-size: 15px;
+    }
+
+    .info-box {
+        padding: 18px;
+    }
+
+    .info-box p {
+        font-size: 13px;
+    }
+
+    .nav-container {
+        margin-top: 28px;
+    }
+}
+
+/* Small mobile devices (320px - 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    /* Disable background pattern overlay for performance */
+    body::before {
+        opacity: 0.15;
+    }
+
+    body::after {
+        display: none; /* Remove sunburst on small screens */
+    }
+
+    .container {
+        padding: 25px 20px;
+        margin: 10px auto;
+        box-shadow:
+            0 10px 30px var(--shadow-warm),
+            inset 0 0 0 1px rgba(244, 169, 0, 0.2),
+            inset 0 0 0 4px var(--light-cream),
+            inset 0 0 0 5px var(--mustard-yellow);
+    }
+
+    /* Further reduce decorative corners */
+    .container::before,
+    .container::after {
+        font-size: 16px;
+    }
+
+    .container::before {
+        top: 12px;
+        left: 12px;
+    }
+
+    .container::after {
+        bottom: 12px;
+        right: 12px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+        margin-bottom: 25px;
+        line-height: 1.4;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    label {
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    select {
+        padding: 15px 16px;
+        font-size: 16px; /* Prevent zoom */
+        min-height: 48px;
+    }
+
+    button {
+        padding: 16px;
+        font-size: 16px;
+        letter-spacing: 1px;
+        min-height: 52px;
+    }
+
+    /* Disable button shimmer effect on mobile for performance */
+    button::before {
+        display: none;
+    }
+
+    .back-link {
+        padding: 12px 18px;
+        font-size: 14px;
+        min-height: 48px;
+        line-height: 24px;
+    }
+
+    /* Disable hover transition for better mobile performance */
+    .back-link::before {
+        display: none;
+    }
+
+    /* Convert table to card layout for mobile */
+    .results-table {
+        border-spacing: 0;
+        margin-top: 20px;
+    }
+
+    .results-table thead {
+        display: none; /* Hide table header on mobile */
+    }
+
+    .results-table tbody {
+        display: block;
+    }
+
+    .results-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 2px solid var(--warm-beige);
+        border-left: 5px solid var(--mustard-yellow);
+        position: relative;
+    }
+
+    .results-table tbody tr:first-child {
+        border-left-color: var(--terracotta);
+        border-left-width: 5px;
+    }
+
+    .results-table tbody tr:first-child::before {
+        left: auto;
+        right: 10px;
+        top: 10px;
+        transform: none;
+        font-size: 28px;
+    }
+
+    .results-table tbody tr:hover {
+        transform: none; /* Disable hover scale on mobile */
+    }
+
+    .results-table td {
+        display: block;
+        padding: 8px 0;
+        border: none;
+        text-align: left;
+    }
+
+    /* Add labels to data cells */
+    .results-table td:nth-child(1)::before {
+        content: 'Rank: ';
+        font-weight: 700;
+        color: var(--terracotta);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .results-table td:nth-child(2) {
+        font-size: 18px;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--warm-beige);
+    }
+
+    .results-table td:nth-child(2)::before {
+        content: '';
+    }
+
+    .results-table td:nth-child(3)::before {
+        content: '1st Choice: ';
+        font-weight: 600;
+        color: var(--chocolate-brown);
+    }
+
+    .results-table td:nth-child(4)::before {
+        content: '2nd Choice: ';
+        font-weight: 600;
+        color: var(--chocolate-brown);
+    }
+
+    .results-table td:nth-child(5)::before {
+        content: 'Total Score: ';
+        font-weight: 700;
+        color: var(--terracotta);
+        font-size: 14px;
+    }
+
+    .results-table td:nth-child(5) {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--warm-beige);
+    }
+
+    .alert {
+        padding: 15px 18px;
+        margin-bottom: 18px;
+        font-size: 14px;
+    }
+
+    .info-box {
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .info-box p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .nav-container {
+        margin-top: 25px;
+    }
+
+    /* Radio button grid mobile optimization */
+    .radio-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .radio-button-content {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    /* Increase max-height for wizard steps with many items */
+    .wizard-step-visible {
+        max-height: 800px;
+    }
+
+    /* Reduce animation complexity for performance */
+    .container,
+    h1,
+    .subtitle,
+    .form-group,
+    button,
+    .nav-container {
+        animation-duration: 0.4s;
+    }
+}
+
+/* Extra small devices (up to 320px) */
+@media (max-width: 320px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    input[type="text"],
+    select,
+    button {
+        font-size: 15px;
+    }
+
+    .results-table td:nth-child(2) {
+        font-size: 16px;
+    }
+}
+
+/* Landscape mode optimization for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        margin: 10px auto;
+        padding: 25px 30px;
+    }
+
+    h1 {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    button {
+        padding: 14px;
+    }
+}
+
+/* Improve accessibility and touch interactions */
+@media (hover: none) and (pointer: coarse) {
+    /* This targets touch-only devices */
+
+    button:hover {
+        transform: none; /* Disable hover lift on touch devices */
+    }
+
+    button:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 15px rgba(193, 102, 107, 0.3);
+    }
+
+    .back-link:hover {
+        transform: none;
+    }
+
+    .back-link:active {
+        transform: scale(0.98);
+    }
+
+    .results-table tbody tr:hover {
+        transform: none;
+        background: white;
+    }
+
+    .results-table tbody tr:active {
+        background: var(--light-cream);
+    }
+
+    /* Remove all hover effects that don't work well on touch */
+    input[type="text"]:hover,
+    select:hover {
+        transform: none;
+    }
+}
+
+/* High DPI screens (Retina displays) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body::before {
+        opacity: 0.25; /* Slightly more visible on retina */
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    body::after {
+        animation: none !important;
+    }
+}
+
+/* Wizard-style progressive disclosure */
+.wizard-step {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top center;
+}
+
+.wizard-step-hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin-bottom: 0;
+    transform: translateY(-20px) scale(0.95);
+    pointer-events: none;
+}
+
+.wizard-step-visible {
+    opacity: 1;
+    max-height: 1000px;
+    margin-bottom: 30px;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Map Section Styling (Results Page) */
+.map-section {
+    margin-top: 40px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow-warm);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.map-section h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--chocolate-brown);
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Map on Voting Form */
+#mapStep #map {
+    width: 100%;
+    height: 450px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    margin-top: 15px;
+}
+
+/* Map on Results Page */
+.map-section #map {
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+/* Map Instructions */
+.map-instructions {
+    color: var(--chocolate-brown);
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Selection Status Display */
+.selection-status {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--light-cream) 0%, white 100%);
+    border-radius: 8px;
+    border: 2px solid var(--warm-beige);
+}
+
+.selection-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.selection-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--terracotta);
+}
+
+.selection-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--chocolate-brown);
+    padding: 8px 12px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--warm-beige);
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+.selection-value:empty::before {
+    content: 'Not selected';
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* Custom marker styling */
+.custom-marker {
+    background: transparent;
+    border: none;
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.2);
+}
+
+.leaflet-popup-content {
+    margin: 10px 15px;
+    font-family: 'Lora', serif;
+}
+
+/* Marker label styling */
+.marker-label {
+    background: rgba(74, 64, 58, 0.9) !important;
+    border: 2px solid white !important;
+    border-radius: 4px !important;
+    color: var(--light-cream) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    padding: 4px 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    white-space: nowrap !important;
+}
+
+.marker-label::before {
+    border: none !important;
+}
+
+/* Mobile responsiveness for map */
+@media (max-width: 768px) {
+    .map-section {
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    .map-section h2 {
+        font-size: 24px;
+    }
+
+    #mapStep #map {
+        height: 350px;
+    }
+
+    .map-section #map {
+        height: 400px;
+    }
+
+    .selection-status {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .selection-label {
+        font-size: 11px;
+    }
+
+    .selection-value {
+        font-size: 14px;
+        padding: 6px 10px;
+        min-height: 36px;
+    }
+
+    .map-instructions {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-section {
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .map-section h2 {
+        font-size: 20px;
+    }
+
+    #mapStep #map {
+        height: 300px;
+    }
+
+    .map-section #map {
+        height: 300px;
+    }
+
+    .selection-status {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .selection-item {
+        width: 100%;
+    }
+
+    .selection-label {
+        font-size: 11px;
+    }
+
+    .selection-value {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .map-instructions {
+        font-size: 12px;
+    }
+}
