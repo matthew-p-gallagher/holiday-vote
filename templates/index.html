@@ -33,7 +33,10 @@
             </div>
 
             <div class="form-group wizard-step wizard-step-hidden" id="mapStep">
-                <label class="form-label">Select Your Destinations from the Map</label>
+                <label class="form-label" id="mapStepLabel"></label>
+                <div style="text-align: right; margin-top: -8px; margin-bottom: 12px;">
+                    <a href="/" style="font-size: 14px; color: #999; text-decoration: none;">Not you?</a>
+                </div>
 
                 <!-- Map container -->
                 <div id="map"></div>
@@ -102,9 +105,14 @@
 
         // When traveler name is selected, pause, fade out name, then fade in map
         const voterRadios = document.querySelectorAll('input[name="voter_name"]');
+        const mapStepLabel = document.getElementById('mapStepLabel');
+
         voterRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.checked) {
+                    // Update the map step label with the voter's name
+                    mapStepLabel.textContent = `Okay ${this.value}, select your destinations from the map...`;
+
                     // Pause for 400ms to let user see their selection
                     setTimeout(() => {
                         // Fade out name step
