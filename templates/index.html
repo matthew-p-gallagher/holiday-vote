@@ -128,9 +128,10 @@
             // Create map centered on Europe with initial view
             map = L.map('map').setView([42.0, 1.0], 4);
 
-            // Add Stamen Watercolor tiles (artistic watercolor style)
-            L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg', {
-                maxZoom: 16,
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
             // Reset map to initial view when popup is closed
