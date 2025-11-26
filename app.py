@@ -66,12 +66,12 @@ def vote():
 
     return render_template('success.html', voter_name=voter_name, total_votes=total_votes)
 
-@app.route('/results')
-def results():
-    """Display voting results"""
-    results_data, total_votes = get_results()
-    return render_template('results.html', results=results_data,
-                         total_votes=total_votes, max_votes=14)
+# @app.route('/results')
+# def results():
+#     """Display voting results"""
+#     results_data, total_votes = get_results()
+#     return render_template('results.html', results=results_data,
+#                          total_votes=total_votes, max_votes=14)
 
 @app.route('/api/holidays')
 def api_holidays():

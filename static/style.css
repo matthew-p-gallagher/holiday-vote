@@ -802,7 +802,6 @@ button:active {
 
     /* Add labels to data cells */
     .results-table td:nth-child(1)::before {
-        content: 'Rank: ';
         font-weight: 700;
         color: var(--terracotta);
         font-size: 13px;

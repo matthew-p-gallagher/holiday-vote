@@ -4,7 +4,7 @@
         <h1>Voting Results</h1>
 
         <p class="subtitle">
-            🗳 <strong>{{ total_votes }}</strong> of <strong>{{ max_votes }}</strong> travelers have cast their vote
+            🗳 <strong>{{ total_votes }}</strong> of <strong>{{ max_votes }}</strong> have cast their vote
         </p>
 
         {% if total_votes == 0 %}
@@ -15,35 +15,26 @@
         <table class="results-table">
             <thead>
                 <tr>
-                    <th>Rank</th>
+                    <th></th>
                     <th>Destination</th>
-                    <th>1st Choice</th>
-                    <th>2nd Choice</th>
-                    <th>Score</th>
                 </tr>
             </thead>
             <tbody>
-                {% for result in results %}
+                {% if results %}
                 <tr>
-                    <td><strong>{{ loop.index }}</strong></td>
+                    <td><strong style="font-size: 24px;">Winner</strong></td>
                     <td>
-                        <strong>{{ result.destination }}</strong>
-                        {% if result.by %}
-                        <br><small style="color: #888; font-size: 13px;">{{ result.by }}</small>
+                        <strong style="font-size: 42px; color: var(--terracotta);">{{ results[0].destination }}</strong>
+                        {% if results[0].by %}
+                        <br><small style="color: #888; font-size: 24px;">by {{ results[0].by }}</small>
                         {% endif %}
+                        <br><small style="color: #666; font-size: 14px;">Total points: <strong>{{ results[0].total_score }}</strong></small>
                     </td>
-                    <td>{{ result.first_choice_votes }} <span style="color: #888;">({{ result.first_choice_votes * 2 }} pts)</span></td>
-                    <td>{{ result.second_choice_votes }} <span style="color: #888;">({{ result.second_choice_votes * 1 }} pt)</span></td>
-                    <td><strong style="font-size: 20px; color: var(--terracotta);">{{ result.total_score }}</strong></td>
                 </tr>
-                {% endfor %}
+                {% endif %}
             </tbody>
         </table>
 
 
         {% endif %}
-
-        <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="back-link">Cast Your Vote</a>
-        </div>
 {% endblock %}
