@@ -87,7 +87,6 @@
         const markers = {};
         const destinationInfo = {}; // Maps destination to proposer name
         let map = null;
-        let initialBounds = null; // Store initial map bounds for reset
 
         // Helper function to show a wizard step
         function showStep(step) {
@@ -126,14 +125,23 @@
         function initializeMap() {
             if (map) return; // Already initialized
 
-            // Create map centered on Europe
-            // Overridden by fitbounds
-            map = L.map('map').setView([43.0, -3.0], 4);
+            // Create map centered on Europe with initial view
+            map = L.map('map').setView([42.0, 1.0], 4);
 
             // Add Stamen Watercolor tiles (artistic watercolor style)
             L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg', {
                 maxZoom: 16,
             }).addTo(map);
+
+            // Reset map to initial view when popup is closed
+            map.on('popupclose', function() {
+                setTimeout(() => {
+                    map.setView([42.0, 1.0], 4, {
+                        animate: true,
+                        duration: 0.8
+                    });
+                }, 300);
+            });
 
             // Fetch holiday locations and create markers
             fetch('{{ url_for("api_holidays") }}')
@@ -144,19 +152,6 @@
                             createMarker(holiday);
                         }
                     });
-
-                    // Adjust map to show all markers
-                    if (holidays.length > 0) {
-                        const validHolidays = holidays.filter(h => h.latitude && h.longitude);
-                        if (validHolidays.length > 0) {
-                            const bounds = L.latLngBounds(
-                                validHolidays.map(h => [h.latitude, h.longitude])
-                            );
-                            map.fitBounds(bounds, { padding: [40, 40] });
-                            // Store initial bounds for reset after selection
-                            initialBounds = bounds;
-                        }
-                    }
                 })
                 .catch(error => console.error('Error loading map data:', error));
         }
@@ -176,25 +171,25 @@
             // Create popup with selection buttons
             const imageUrl = `/static/images/${holiday.by}.jpeg`;
             const popupContent = `
-                <div style="text-align: center; padding: 8px; min-width: 160px;">
-                    <div style="width: 110px; height: auto; margin: 0 auto 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
+                <div style="text-align: center; padding: 4px; min-width: 150px;">
+                    <div style="width: 85px; height: auto; margin: 0 auto 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-radius: 4px;">
                         <img src="${imageUrl}" style="width: 100%; height: auto; display: block;" alt="${holiday.by}">
                     </div>
-                    <strong style="font-size: 16px; color: var(--terracotta, #D4846A); display: block; margin-bottom: 3px;">
+                    <strong style="font-size: 16px; color: var(--terracotta, #D4846A); display: block; margin-bottom: 3px; line-height: 1.2;">
                         ${holiday.destination}
                     </strong>
-                    <small style="color: #666; display: block; margin-bottom: 10px; font-size: 12px;">
-                        Suggested by ${holiday.by}
+                    <small style="color: #666; display: block; margin-bottom: 8px; font-size: 12px;">
+                        by ${holiday.by}
                     </small>
                     <button type="button" onclick="selectDestination('${holiday.destination}', '${holiday.by}', 'first')"
                             class="map-select-btn map-select-first"
-                            style="display: block; width: 100%; margin-bottom: 5px; padding: 4px 6px; background: linear-gradient(135deg, #D4A24C 0%, #E6C068 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Lora', serif;">
-                        Select as 1st Choice
+                            style="display: block; width: 100%; margin-bottom: 4px; padding: 3px 8px; background: linear-gradient(135deg, #D4A24C 0%, #E6C068 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 11px; font-family: 'Lora', serif;">
+                        1ST CHOICE
                     </button>
                     <button type="button" onclick="selectDestination('${holiday.destination}', '${holiday.by}', 'second')"
                             class="map-select-btn map-select-second"
-                            style="display: block; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #999 0%, #BBB 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Lora', serif;">
-                        Select as 2nd Choice
+                            style="display: block; width: 100%; padding: 3px 8px; background: linear-gradient(135deg, #999 0%, #BBB 100%); color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 11px; font-family: 'Lora', serif;">
+                        2ND CHOICE
                     </button>
                 </div>
             `;
@@ -291,15 +286,13 @@
             // Close popup after selection
             map.closePopup();
 
-            // Reset map to show all destinations after a short delay
-            if (initialBounds) {
-                setTimeout(() => {
-                    map.fitBounds(initialBounds, {
-                        padding: [40, 40],
-                        duration: 0.8  // Smooth animation back to overview
-                    });
-                }, 300);
-            }
+            // Reset map to initial view after a short delay
+            setTimeout(() => {
+                map.setView([42.0, 1.0], 4, {
+                    animate: true,
+                    duration: 0.8  // Smooth animation back to overview
+                });
+            }, 300);
 
             // Show submit button if both choices are made
             if (firstChoiceValue && secondChoiceValue) {
