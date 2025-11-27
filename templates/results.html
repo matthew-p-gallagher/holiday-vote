@@ -21,16 +21,40 @@
             </thead>
             <tbody>
                 {% if results %}
-                <tr>
-                    <td><strong style="font-size: 24px;">Winner</strong></td>
-                    <td>
-                        <strong style="font-size: 42px; color: var(--terracotta);">{{ results[0].destination }}</strong>
+                <tr id="winner-row" onclick="revealWinner()" style="cursor: pointer;">
+                    <td><strong id="winner-label" style="font-size: 24px; color: transparent;">Winner</strong></td>
+                    <td style="position: relative;">
+                        <span id="click-hint" style="color: #888; font-size: 18px; font-style: italic;">Click to reveal</span>
+                        <strong id="winner-dest" style="font-size: 42px; color: transparent;">{{ results[0].destination }}</strong>
                         {% if results[0].by %}
-                        <br><small style="color: #888; font-size: 24px;">by {{ results[0].by }}</small>
+                        <br><small id="winner-by" style="color: transparent; font-size: 24px;">by {{ results[0].by }}</small>
                         {% endif %}
-                        <br><small style="color: #666; font-size: 14px;">Total points: <strong>{{ results[0].total_score }}</strong></small>
+                        <br><small id="winner-score" style="color: transparent; font-size: 14px;">Total points: <strong>{{ results[0].total_score }}</strong></small>
                     </td>
                 </tr>
+                <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+                <script>
+                let isRevealed = false;
+                function revealWinner() {
+                    if (!isRevealed) {
+                        document.getElementById('click-hint').style.display = 'none';
+                        document.getElementById('winner-label').style.color = '#333';
+                        document.getElementById('winner-dest').style.color = 'var(--terracotta)';
+                        const byElement = document.getElementById('winner-by');
+                        if (byElement) byElement.style.color = '#888';
+                        document.getElementById('winner-score').style.color = '#666';
+
+                        // Trigger confetti
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+
+                        isRevealed = true;
+                    }
+                }
+                </script>
                 {% endif %}
             </tbody>
         </table>
